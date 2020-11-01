@@ -33,7 +33,7 @@ def loss_epoch(model,loss_func,dataset_dl,device,sanity_check=False,memory_check
             print('After copy minibatch: ', end = '')
             print_gpu_memory()
 
-        output=model(xb)#.squeeze()
+        output=model(xb).squeeze()
         loss_b, metric_b=lu.loss_batch(loss_func, output, yb, opt)
         running_loss += loss_b
         
