@@ -39,7 +39,7 @@ def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
     loss = loss.sum(dim=(1,2))/float(total)
     #print("DICEFINAL:", dice.sum())
     #print("LOSSFINAL:", loss.sum()) 
-    
+    print(dice)
     return loss.sum(), dice.sum()
 
 def loss_batch(loss_func, output, target, opt=None):   
