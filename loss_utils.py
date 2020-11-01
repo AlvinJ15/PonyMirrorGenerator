@@ -26,7 +26,7 @@ def loss_func(pred, target):
 def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
     dice = torch.abs(target-pred) <= alpha
     loss = torch.abs(target-pred) > alpha
-    total = dice.shape[1]*dice.shape[2]*dice.shape[3]
+    total = sum(dice.shape[1:])
 
     if False:
         print("TOTAL ",total)
@@ -35,8 +35,8 @@ def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
         print("DICESUM:", dice.sum(dim=(1,2,3)))
         print("LOSSSUM:",loss.sum(dim=(1,2,3)))
         print("-"*10)
-    dice = dice.sum(dim=(1,2,3))/float(total)
-    loss = loss.sum(dim=(1,2,3))/float(total)
+    dice = dice.sum(dim=(1,2))/float(total)
+    loss = loss.sum(dim=(1,2))/float(total)
     #print("DICEFINAL:", dice.sum())
     #print("LOSSFINAL:", loss.sum()) 
     
