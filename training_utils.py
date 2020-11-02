@@ -3,7 +3,7 @@ import torchvision
 import loss_utils as lu
 import torch
 import os
-
+import json
 
 
 def print_gpu_memory():
@@ -86,6 +86,9 @@ def train_val(model, params, device, saveFunction):
         with torch.no_grad():
             val_loss, val_metric=loss_epoch(model,loss_func,val_dl,device,sanity_check)
 
+        loss_history = json.load(open("loss_history.txt"))
+        metric_history = json.load(open("metric_history.txt"))
+
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss=val_loss    
     if memory_check:
@@ -131,6 +134,13 @@ def train_val(model, params, device, saveFunction):
         if memory_check:
             print("AFTER EPOCH "+str(epoch)+" :", end='')
             print_gpu_memory()
+
+        json.dump(loss_history, open("loss_history.txt",'w'))
+        json.dump(metric_history, open("metric_history.txt",'w'))
+
+        if saveFunction is not None:
+            saveFunction("loss_history.txt")
+            saveFunction("metric_history.txt")
 
     model.load_state_dict(best_model_wts)
     return model, loss_history, metric_history        

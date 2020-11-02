@@ -46,7 +46,7 @@ def loss_batch(loss_func, output, target, opt=None):
     
     pred= torch.sigmoid(output)
     
-    _, metric_b=dice_loss_custom(pred, target)
+    _, metric_b=dice_loss(pred, target)
     
     if opt is not None:
         opt.zero_grad()
