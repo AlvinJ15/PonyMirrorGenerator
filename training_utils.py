@@ -69,7 +69,8 @@ def train_val(model, params, device, saveFunction):
     lr_scheduler=params["lr_scheduler"]
     path2weights=params["path2weights"]
     load_previous_weights=params["load_previous_weights"]
-    
+    only_load_weights = params["only_load_weights"]
+
     loss_history={
         "train": [],
         "val": []}
@@ -78,6 +79,7 @@ def train_val(model, params, device, saveFunction):
         "train": [],
         "val": []}    
     
+    initial_epoch = 0
     val_loss = float('inf')
     if load_previous_weights:
         path2weights="./models/weights.pt"
@@ -89,6 +91,14 @@ def train_val(model, params, device, saveFunction):
         loss_history = json.load(open("loss_history.txt"))
         metric_history = json.load(open("metric_history.txt"))
 
+        initial_epoch = len(loss_history["train"])+1
+        for i in range(len(loss_history["train"])):
+            printLossAndMetric(loss_history["train"][i],metric_history["val"][i], loss_history["val"][i], metric_history["val"][i])
+
+
+    if only_load_weights and load_previous_weights:
+        return model, loss_history, metric_history
+
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss=val_loss    
     if memory_check:
@@ -96,7 +106,7 @@ def train_val(model, params, device, saveFunction):
         print_gpu_memory()
         print("-"*20)
 
-    for epoch in range(num_epochs):
+    for epoch in range(initial_epoch, num_epochs):
         current_lr=get_lr(opt)
         print('Epoch {}/{}, current lr={}'.format(epoch, num_epochs - 1, current_lr))
         if memory_check:
@@ -129,8 +139,8 @@ def train_val(model, params, device, saveFunction):
             print("Loading best model weights!")
             model.load_state_dict(best_model_wts) 
             
-        print("train loss: %.6f, dice: %.4f" %(train_loss,100*train_metric))
-        print("val loss: %.6f, dice: %.4f" %(val_loss,100*val_metric))
+        printLossAndMetric(train_loss,train_metric, val_loss, val_metric)
+
         if memory_check:
             print("AFTER EPOCH "+str(epoch)+" :", end='')
             print_gpu_memory()
@@ -143,4 +153,8 @@ def train_val(model, params, device, saveFunction):
             saveFunction("metric_history.txt")
 
     model.load_state_dict(best_model_wts)
-    return model, loss_history, metric_history        
+    return model, loss_history, metric_history      
+
+    def printLossAndMetric(train_loss, train_metric, val_loss, val_metric):
+        print("train loss: %.6f, dice: %.4f" %(train_loss,100*train_metric))
+        print("val loss: %.6f, dice: %.4f" %(val_loss,100*val_metric))
