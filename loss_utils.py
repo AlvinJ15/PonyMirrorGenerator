@@ -26,7 +26,8 @@ def loss_func(pred, target):
 def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
     dice = torch.abs(target-pred) <= alpha
     loss = torch.abs(target-pred) > alpha
-    total = np.prod(dice.shape[1:])
+    #total = np.prod(dice.shape[1:])
+    total = 4096
 
     if False:
         print("TOTAL ",total)
