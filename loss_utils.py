@@ -20,7 +20,7 @@ def loss_func(pred, target):
     ##dlv, _ = dice_loss_custom(pred, target)
     
     ##loss = bce  + dlv
-    loss, _ = dice_loss_custom(pred>=4e-3, target)
+    loss, _ = dice_loss_custom((pred>=4e-3).type(torch.uint8), target)
     return loss
 
 def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
