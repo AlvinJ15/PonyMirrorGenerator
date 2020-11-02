@@ -18,6 +18,10 @@ def metrics_batch(pred, target):
     
     return metric
 
+def printLossAndMetric(train_loss, train_metric, val_loss, val_metric):
+    print("train loss: %.6f, dice: %.4f" %(train_loss,100*train_metric))
+    print("val loss: %.6f, dice: %.4f" %(val_loss,100*val_metric))
+
 def loss_epoch(model,loss_func,dataset_dl,device,sanity_check=False,memory_check=False,opt=None):
     running_loss=0.0
     running_metric=0.0
@@ -82,7 +86,6 @@ def train_val(model, params, device, saveFunction):
     initial_epoch = 0
     val_loss = float('inf')
     if load_previous_weights:
-        path2weights="./models/weights.pt"
         model.load_state_dict(torch.load(path2weights))
         model.eval()
         with torch.no_grad():
@@ -155,6 +158,3 @@ def train_val(model, params, device, saveFunction):
     model.load_state_dict(best_model_wts)
     return model, loss_history, metric_history      
 
-    def printLossAndMetric(train_loss, train_metric, val_loss, val_metric):
-        print("train loss: %.6f, dice: %.4f" %(train_loss,100*train_metric))
-        print("val loss: %.6f, dice: %.4f" %(val_loss,100*val_metric))
