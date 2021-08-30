@@ -13,14 +13,15 @@ def dice_loss(pred, target, smooth = 1e-5):
 
 
 def loss_func(pred, target):
-    #bce = F.binary_cross_entropy_with_logits(pred, target,  reduction='sum')
+    bce = F.binary_cross_entropy_with_logits(pred, target,  reduction='sum')
     pred= torch.sigmoid(pred)
-    bce = F.mse_loss(pred, target,  reduction='sum')
-    
-    ##dlv, _ = dice_loss_custom(pred, target)
-    
-    ##loss = bce  + dlv
-    return bce
+    #bce = F.mse_loss(pred, target,  reduction='sum')
+
+    dlv, _ = dice_loss_custom(pred, target)
+
+    loss = bce  + dlv
+
+    return loss
 
 def dice_loss_custom(pred, target, alpha=4e-3, smoth = 1e-5):
     dice = torch.abs(target-pred) <= alpha
