@@ -94,8 +94,9 @@ def train_val(model, params, device, saveFunction):
         loss_history = json.load(open("loss_history.txt"))
         metric_history = json.load(open("metric_history.txt"))
 
-        initial_epoch = len(loss_history["train"])+1
+        initial_epoch = len(loss_history["train"])
         for i in range(len(loss_history["train"])):
+            print('Epoch {}/{}'.format(i, num_epochs - 1))
             printLossAndMetric(loss_history["train"][i],metric_history["val"][i], loss_history["val"][i], metric_history["val"][i])
 
 
